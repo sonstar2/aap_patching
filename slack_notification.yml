@@ -1,0 +1,10 @@
+---
+- name: Slack Notification
+  hosts: all
+  connection: local
+  gather_facts: false
+  tasks:
+
+  - name: Send Slack Message
+    ansible.builtin.include_role:
+      name: "{{ item }}"

@@ -1,0 +1,11 @@
+---
+- name: Create an incident in ServiceNow using facts from a host
+  hosts: "{{ vm_name | default('all')}}"
+  gather_facts: false
+  connection: local
+
+  vars:
+    servicenow_ticket: create
+
+  roles:
+    - demo.process.snow_ticket

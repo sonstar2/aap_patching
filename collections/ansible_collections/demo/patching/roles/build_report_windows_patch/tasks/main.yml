@@ -1,0 +1,27 @@
+---
+- name: Create HTML report
+  ansible.builtin.template:
+    src: report.j2
+    dest: "{{ file_path }}/windowspatch.html"
+    mode: "0644"
+  check_mode: false
+
+- name: Copy CSS over
+  ansible.builtin.copy:
+    src: "css"
+    dest: "{{ file_path }}"
+    directory_mode: true
+    mode: "0775"
+  check_mode: false
+
+- name: Copy logo over
+  ansible.builtin.copy:
+    src: "webpage_logo.png"
+    dest: "{{ file_path }}"
+    directory_mode: true
+    mode: "0644"
+  check_mode: false
+
+- name: Display link to Patch report
+  ansible.builtin.debug:
+    msg: "Please go to http://{{ ansible_host }}/windowspatch.html"

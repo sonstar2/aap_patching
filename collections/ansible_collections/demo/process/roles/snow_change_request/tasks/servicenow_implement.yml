@@ -1,0 +1,5 @@
+---
+- name: Update to implement a change request in ServiceNow
+  servicenow.itsm.change_request:
+    state: implement
+    number: "{{ change_request_number }}"

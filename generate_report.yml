@@ -1,0 +1,38 @@
+---
+- name: Generate Patching Report
+  hosts: "{{ _hosts | default(omit) }}"
+  become: true
+  vars:
+    report_server: reports
+
+  tasks:
+
+    - name: Deploy report server
+      when: not ansible_check_mode
+      delegate_to: "{{ report_server }}"
+      run_once: true  # noqa: run-once[task]
+      block:
+        - name: Install firewall dependencies
+          ansible.builtin.dnf:
+            name:
+              - firewalld
+              - python3-firewall
+            state: present
+
+        - name: Start firewalld
+          ansible.builtin.service:
+            name: firewalld
+            state: started
+
+        - name: Build report server
+          ansible.builtin.include_role:
+            name: "{{ item }}"
+          loop:
+            - demo.patching.report_server
+            - demo.patching.report_linux
+            - demo.patching.report_linux_patching
+
+        - name: Publish landing page
+          ansible.builtin.include_role:
+            name: demo.patching.report_server
+            tasks_from: linux_landing_page
