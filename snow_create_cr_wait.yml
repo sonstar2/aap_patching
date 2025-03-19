@@ -6,6 +6,10 @@
 
   vars:
     servicenow_cr: create_wait
+    cr_short_description: "Patch Change Request"
+    cr_description: "{{ owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ patch_environment }} to patch }}"
 
   roles:
     - demo.process.snow_change_request
+
+
