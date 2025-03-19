@@ -5,7 +5,7 @@
   connection: local
 
   vars:
-    servicenow_cr: create
+    servicenow_cr: create_wait
 
   roles:
     - demo.process.snow_change_request

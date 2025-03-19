@@ -8,4 +8,5 @@
     servicenow_ticket: close
 
   roles:
-    - - demo.process.snow_ticket
+    - demo.process.snow_change_request
+

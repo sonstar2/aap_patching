@@ -5,4 +5,5 @@
   connection: local
 
   roles:
-    - - demo.process.snow_cmdb
+    - demo.process.snow_cmdb
+

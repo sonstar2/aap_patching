@@ -8,4 +8,4 @@
     servicenow_cr: close
 
   roles:
-    - - demo.process.snow_change_request
+    - demo.process.snow_change_request
