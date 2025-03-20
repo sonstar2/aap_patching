@@ -1,0 +1,17 @@
+---
+- name: Create a change request and send Slack Notification
+  hosts: all
+  gather_facts: false
+  connection: local
+
+  vars:
+    servicenow_cr: CR_Slack_Wait
+    cr_short_description: "Patch Change Request"
+    cr_description: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch }}"
+    slack_message: "{{ cr_description }}"
+
+  roles:
+    - demo.process.snow_change_request
+  run_once: yes
+
+

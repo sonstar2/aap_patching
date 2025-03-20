@@ -9,6 +9,11 @@
   when:
     - servicenow_cr == "create_wait"
 
+- name: Create CR_Slack_Wait
+  ansible.builtin.include_tasks: servicenow_create_slack_wait.yml
+  when:
+    - servicenow_cr == "create_wait"
+
 - name: Implement CR
   ansible.builtin.include_tasks: servicenow_implement.yml
   when:
