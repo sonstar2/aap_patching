@@ -5,6 +5,5 @@
   gather_facts: false
   tasks:
 
-  - name: Send Slack Message
-    ansible.builtin.include_role:
-      name: "{{ item }}"
+  roles:
+    - demo.process.slack
