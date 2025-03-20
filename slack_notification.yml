@@ -5,5 +5,9 @@
   gather_facts: false
   tasks:
 
+  vars:
+    slack_message: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch }}"
+
   roles:
     - demo.process.slack
+  run_once: yes
