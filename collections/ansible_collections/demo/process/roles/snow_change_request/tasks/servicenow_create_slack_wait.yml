@@ -22,6 +22,15 @@
     per_host: false
   delegate_to: localhost
 
+- name: Send Slack Notification
+  ansible.builtin.include_role:
+    name: demo.process.slack
+  vars:
+    slack_message: >-
+      A change request has been raised. 
+      Please click on this URL to review: <{{ lookup('ansible.builtin.env', 'SN_HOST') }}/nav_to.do?uri=change_request.do?sysparm_query=number={{request.record.number }}>
+
+
 # - name: Send Approval e-mail
 #   community.general.mail:
 #     host: "{{ EMAIL_HOST }}"
