@@ -6,8 +6,13 @@
 
   tasks:
 
+  - name: Save the previous status
+    ansible.builtin.set_fact:
+      patch_prog: "{{ patch_progress }}"
+      patch_stg: "{{ patch_stage }}"
+      
   - name: Run only succeeded hosts
-    when: patch_progress[inventory_hostname] and patch_progress[inventory_hostname] == 'success'
+    when: patch_progress[inventory_hostname] == 'success'
     block:
       - name: Pre Patch | Include role for Pre Tasks
         ansible.builtin.include_role:

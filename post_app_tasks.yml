@@ -6,11 +6,13 @@
     app_role_name: "demo.application.{{ app_deployment }}"
 
   tasks:
+  - name: Save the previous status
+    ansible.builtin.set_fact:
+      patch_prog: "{{ patch_progress }}"
+      patch_stg: "{{ patch_stage }}"
 
   - name: Run only succeeded hosts
-    when: 
-      - patch_progress[inventory_hostname] is defined
-      - patch_progress[inventory_hostname] == 'success'
+    when: patch_progress[inventory_hostname] == 'success'
     block:
       - name: Post Patch | Verify {{ app_deployment }} Application
         ansible.builtin.include_role:
