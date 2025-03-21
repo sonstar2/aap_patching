@@ -2,6 +2,8 @@
 - name: Post Application Tasks
   hosts: "{{ _hosts | default(omit) }}"
   become: true
+  vars:
+    app_role_name: "demo.application.{{ app_deployment }}"
 
   tasks:
 

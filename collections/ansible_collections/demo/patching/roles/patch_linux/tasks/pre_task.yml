@@ -1,0 +1,48 @@
+---
+- name: Check the RHEL Repository enabled
+  ansible.builtin.yum_repository:
+    file: redhat-rhui
+    name: "rhel-{{ ansible_distribution_major_version }}-baseos-rhui-rpms"
+    description: "Red Hat Enterprise Linux {{ ansible_distribution_major_version }} for $basearch - BaseOS from RHUI (RPMs)"
+    mirrorlist: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel{{ ansible_distribution_major_version }}/rhui/$releasever/$basearch/baseos/os
+    gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+    sslverify: true
+    sslclientkey: "/etc/pki/rhui/content-rhel{{ ansible_distribution_major_version }}.key"
+    sslclientcert: "/etc/pki/rhui/product/content-rhel{{ ansible_distribution_major_version }}.crt"
+    sslcacert: /etc/pki/rhui/cdn.redhat.com-chain.crt
+    gpgcheck: yes
+    enabled: yes
+  check_mode: yes
+  register: repo_status
+
+- name: Fail when repo is not enabled
+  ansible.builtin.assert:
+    that:
+      - repo_status.changed != true
+    msg: The system doesn't have proper repositories
+
+# Check yum-utils
+- name: Check yum-utils is installed
+  ansible.builtin.yum:
+    name: yum-utils
+    state: installed
+  check_mode: yes
+  register: yum_utils_status
+
+- name: Fail when yum-utils is not installed
+  ansible.builtin.assert:
+    that:
+      - yum_utils_status.changed != true
+    msg: The system doesn't have yum-utils
+
+# Check Disk free space
+- name: Ensure that free space on the volume is greater than 15%
+  assert:
+    that:
+      - mount.size_available > mount.size_total|float * 0.05
+    msg: Disk space has reached 95% threshold
+  vars:
+    mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
+  with_items:
+    - "{{ ansible_mounts }}"
+
