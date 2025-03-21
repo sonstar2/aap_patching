@@ -5,10 +5,10 @@
   tasks:
     - name: Set Default Status
       ansible.builtin.set_fact:
-        patch_progress:
+        patch_prog:
           - key: "{{ inventory_hostname }}"
             value: 'success'
-        patch_stage:
+        patch_stg:
           - key: "{{ inventory_hostname }}"
             value: Start
       
