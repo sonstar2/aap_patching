@@ -9,10 +9,11 @@
   tasks:
 
   - name: Save the previous status
-    ansible.builtin.set_fact:
-      patch_prog: "{{ patch_progress }}"
-      patch_stg: "{{ patch_stage }}"
-      
+    ansible.builtin.set_stats:
+      data:
+        patch_progress: "{{ patch_progress }}"
+        patch_stage: "{{ patch_stage }}"
+
   - name: Run only succeeded hosts
     when: patch_progress[inventory_hostname] == 'success'
     block:
