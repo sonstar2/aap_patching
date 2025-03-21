@@ -11,7 +11,7 @@
         file: redhat-rhui
         name: "rhel-{{ ansible_distribution_major_version }}-baseos-rhui-rpms"
         description: "Red Hat Enterprise Linux {{ ansible_distribution_major_version }} for $basearch - BaseOS from RHUI (RPMs)"
-        mirrorlist: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel8/rhui/$releasever/$basearch/baseos/os
+        mirrorlist: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel{{ ansible_distribution_major_version }}/rhui/$releasever/$basearch/baseos/os
         gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
         sslverify: true
         sslclientkey: "/etc/pki/rhui/content-rhel{{ ansible_distribution_major_version }}.key"
@@ -52,3 +52,4 @@
         mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
       with_items:
         - "{{ ansible_mounts }}"
+
