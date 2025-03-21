@@ -10,4 +10,4 @@
       ansible.builtin.include_role:
         name: demo.cloud.aws
         tasks_from: restore_vm
-
+      when: patch_progress[inventory_hostname] == 'fail'
