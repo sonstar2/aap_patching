@@ -1,5 +1,5 @@
 ---
-- name: Stop Postgresql server
+- name: Start Postgresql server
   ansible.builtin.service:
     name: postgresql
     state: started
