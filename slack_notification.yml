@@ -6,7 +6,7 @@
   tasks:
 
   vars:
-    slack_message: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch }}"
+    slack_message: "The change has been closed with {{ cr_close_status }} result"
 
   roles:
     - demo.process.slack
