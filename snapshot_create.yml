@@ -6,7 +6,26 @@
 
   tasks:
 
+  - name: Run only succeeded hosts
+    when: patch_progress.status == 'success'
+    block:
     - name: Include Cloud role
       ansible.builtin.include_role:
         name: demo.cloud.aws
         tasks_from: snapshot_vm
+
+      - name: Set Success Status
+        set_fact:
+          patch_progress:
+            status: success
+            step: snapshot_create
+          cacheable: yes
+
+    rescue:
+      - name: Set Fail Status
+        set_fact:
+          patch_progress:
+            status: fail
+            step: snapshot_create
+          cacheable: yes
+        failed_when: true

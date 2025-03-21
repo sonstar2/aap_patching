@@ -9,6 +9,14 @@
     cr_short_description: "Patch Change Request"
     cr_description: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch }}"
 
+  pre_tasks:
+    - name: Set default patch_progress variable
+      set_fact:
+        patch_progress:
+          status: success
+          step: Init
+        cacheable: yes
+
   roles:
     - demo.process.snow_change_request
   run_once: yes

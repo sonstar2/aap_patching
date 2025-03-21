@@ -4,8 +4,29 @@
   become: true
 
   tasks:
-    # Post Patch Task
-    - name: Print Message
-      ansible.builtin.debug:
-        msg: "Post Tasks after patching"
+  
+  - name: Run only succeeded hosts
+    when: patch_progress.status == 'success'
+    block:
+      # Post Patch Task
+      - name: Print Message
+        ansible.builtin.debug:
+          msg: "Post Tasks after patching"
+
+      - name: Set Success Status
+        set_fact:
+          patch_progress:
+            status: success
+            step: post_patch_tasks
+          cacheable: yes
+
+    rescue:
+      - name: Set Fail Status
+        set_fact:
+          patch_progress:
+            status: fail
+            step: post_patch_tasks
+          cacheable: yes
+        failed_when: true
+
         

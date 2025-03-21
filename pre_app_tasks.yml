@@ -8,12 +8,34 @@
 
   tasks:
 
-    - name: Pre Patch | Verify {{ app_deployment }} Application
-      ansible.builtin.include_role:
-        name: "{{ app_role_name }}"
-        tasks_from: test.yml
+  - name: Run only succeeded hosts
+    when: patch_progress.status == 'success'
+    black:
+      - name: Pre Patch | Verify {{ app_deployment }} Application
+        ansible.builtin.include_role:
+          name: "{{ app_role_name }}"
+          tasks_from: test.yml
 
-    - name: Pre Patch | Stop {{ app_deployment }} Application
-      ansible.builtin.include_role:
-        name: "{{ app_role_name }}"
-        tasks_from: stop_service.yml
+      - name: Pre Patch | Stop {{ app_deployment }} Application
+        ansible.builtin.include_role:
+          name: "{{ app_role_name }}"
+          tasks_from: stop_service.yml
+      
+      - name: Set Success Status
+        set_fact:
+          patch_progress:
+            status: success
+            step: pre_app_task
+          cacheable: yes
+
+    rescue:
+      - name: Set Fail Status
+        set_fact:
+          patch_progress:
+            status: fail
+            step: pre_app_task
+          cacheable: yes
+        failed_when: true
+
+
+      

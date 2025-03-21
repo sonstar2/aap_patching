@@ -6,7 +6,27 @@
 
   tasks:
 
-    - name: Pre Patch | Include role for Pre Tasks
-      ansible.builtin.include_role:
-        name: demo.patching.patch_linux
-        tasks_from: pre_task.yml
+  - name: Run only succeeded hosts
+    when: patch_progress.status == 'success'
+    block:
+      - name: Pre Patch | Include role for Pre Tasks
+        ansible.builtin.include_role:
+          name: demo.patching.patch_linux
+          tasks_from: pre_task.yml
+
+      - name: Set Success Status
+        set_fact:
+          patch_progress:
+            status: success
+            step: pre_patch_tasks
+          cacheable: yes
+
+    rescue:
+      - name: Set Fail Status
+        set_fact:
+          patch_progress:
+            status: fail
+            step: pre_patch_tasks
+          cacheable: yes
+        failed_when: true
+

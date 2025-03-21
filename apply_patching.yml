@@ -6,24 +6,27 @@
     report_server: reports
 
   tasks:
-    # Install yum-utils if it's not there
-    - name: Install yum-utils
-      ansible.builtin.yum:
-        name: yum-utils
-        state: installed
 
-    - name: Include patching role
-      ansible.builtin.include_role:
-        name: demo.patching.patch_linux
+  - name: Run only succeeded hosts
+    when: patch_progress.status == 'success'
+    block:
 
-    - name: Tell user when Insights Client is not configured
-      ansible.builtin.debug:
-        msg: "Insights client does not appear to be configured. Scan will be skipped"
-      when:
-        - ansible_local.insights.system_id is not defined
+      - name: Include patching role
+        ansible.builtin.include_role:
+          name: demo.patching.patch_linux
 
-    - name: Run the Insights Client Scan  # noqa: no-changed-when
-      ansible.builtin.command: insights-client
-      when:
-        - not ansible_check_mode
-        - ansible_local.insights.system_id is defined
+      - name: Set Success Status
+        ansible.builtin.set_fact:
+          patch_progress:
+            status: success
+            step: apply_patchig
+          cacheable: yes
+
+    rescue:
+      - name: Set Fail Status
+        ansible.builtin.set_fact:
+          patch_progress:
+            status: fail
+            step: apply_patchig
+          cacheable: yes
+        failed_when: true
