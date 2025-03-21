@@ -8,7 +8,9 @@
   tasks:
 
   - name: Run only succeeded hosts
-    when: patch_progress[inventory_hostname] and patch_progress[inventory_hostname] == 'success'
+    when: 
+      - patch_progress[inventory_hostname] is defined
+      - patch_progress[inventory_hostname] == 'success'
     block:
       - name: Post Patch | Verify {{ app_deployment }} Application
         ansible.builtin.include_role:
