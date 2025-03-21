@@ -39,7 +39,7 @@
     - name: Fail when yum-utils is not installed
       ansible.builtin.assert:
         that:
-          - yum_utils_status.chaged != true
+          - yum_utils_status.changed != true
         msg: The system doesn't have yum-utils
 
     # Check Disk free space
