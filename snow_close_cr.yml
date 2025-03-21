@@ -6,8 +6,8 @@
 
   vars:
     servicenow_cr: close
-    close_code: "successful if {{ close_code }}"
-    close_notes: "{{ close_notes }}"
+    close_code: "{{ patch_overal_status |default('successful')}}"
+    close_notes: "Change is closed with {{ patch_overal_status }} patching"
 
   roles:
     - demo.process.snow_change_request
