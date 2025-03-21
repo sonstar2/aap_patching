@@ -12,7 +12,13 @@
         name: "rhel-{{ ansible_distribution_major_version }}-baseos-rhui-rpms"
         description: "Red Hat Enterprise Linux {{ ansible_distribution_major_version }} for $basearch - AppStream from RHUI (RPMs)"
         mirrorlist: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel8/rhui/$releasever/$basearch/baseos/os
-        state: present
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+        sslverify: true
+        sslclientkey: "/etc/pki/rhui/content-rhel{{ ansible_distribution_major_version }}.key"
+        sslclientcert: "/etc/pki/rhui/product/content-rhel{{ ansible_distribution_major_version }}.crt"
+        sslcacert: /etc/pki/rhui/cdn.redhat.com-chain.crt
+        gpgcheck: yes
+        enabled: yes
       check_mode: yes
       register: repo_status
     
