@@ -8,6 +8,7 @@
         instance_ids: "{{ instance_id }}"
         state: stopped
         wait: true
+      when: inventory_hostname in aws_snapshots
 
     - name: AWS | RESTORE VM | get volumes
       register: r_vol_info
@@ -15,6 +16,7 @@
         region: "{{ aws_region }}"
         filters:
           attachment.instance-id: "{{ instance_id }}"
+      when: inventory_hostname in aws_snapshots
 
     - name: AWS | RESTORE VM | detach volumes
       loop: "{{ r_vol_info.volumes }}"
