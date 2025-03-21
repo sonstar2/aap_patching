@@ -19,10 +19,10 @@
           patch_stage: "{{ patch_stage | items2dict }}"
 
     - name: Set Change Close Status
-        ansible.builtin.set_stats:
-          data:
-            cr_close_status: successful
-          aggregate: no
+      ansible.builtin.set_stats:
+        data:
+          cr_close_status: successful
+        aggregate: no
 
 - name: Create a change request and send Slack Notification
   hosts: all
