@@ -1,0 +1,6 @@
+---
+- name: Stop Postgresql server
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+    enabled: true

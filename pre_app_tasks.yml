@@ -3,9 +3,17 @@
   hosts: "{{ _hosts | default(omit) }}"
   become: true
 
+  vars:
+    app_role_name: "demo.application.{{ app_deployment }}"
+
   tasks:
-    # Install yum-utils if it's not there
-    - name: Install yum-utils
-      ansible.builtin.yum:
-        name: yum-utils
-        state: installed
+
+    - name: Pre Patch | Verify {{ app_deployment }} Application
+      ansible.builtin.include_role:
+        name: "{{ app_role_name }}"
+        tasks_from: test.yml
+
+    - name: Pre Patch | Stop {{ app_deployment }} Application
+      ansible.builtin.include_role:
+        name: "{{ app_role_name }}"
+        tasks_from: stop_service.yml

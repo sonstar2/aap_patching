@@ -1,0 +1,6 @@
+---
+- name: Ensure Cockpit Web Console is stopped
+  service:
+    name: "{{ __cockpit_daemon }}"
+    enabled: "{{ cockpit_enabled | bool }}"
+    state: stopped
