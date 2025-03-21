@@ -25,7 +25,7 @@
     - name: Fail when repo is not enabled
       ansible.builtin.assert:
         that:
-          - repo_status.changed
+          - repo_status.changed != true
         msg: The system doesn't have proper repositories
 
     # Check yum-utils
