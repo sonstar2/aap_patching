@@ -1,15 +1,8 @@
 ---
-- name: Create a change request and send Slack Notification
+- name: Set Default variables
   hosts: all
   gather_facts: false
-  connection: local
-
-  vars:
-    servicenow_cr: CR_Slack_Wait
-    cr_short_description: "Patch Change Request"
-    cr_description: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch"
-
-  pre_tasks:
+  tasks:
     - name: Set Default Status
       ansible.builtin.set_fact:
         patch_progress:
@@ -25,6 +18,16 @@
           patch_progress: "{{ patch_progress | items2dict }}"
           patch_stage: "{{ patch_progress | items2dict }}"
           patch_overal_status: "successful"
+
+- name: Create a change request and send Slack Notification
+  hosts: all
+  gather_facts: false
+  connection: local
+
+  vars:
+    servicenow_cr: CR_Slack_Wait
+    cr_short_description: "Patch Change Request"
+    cr_description: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch"
 
   roles:
     - demo.process.snow_change_request
