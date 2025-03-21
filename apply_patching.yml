@@ -29,7 +29,6 @@
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
             patch_stage: "{{ patch_stage | items2dict }}"
-            patch_overal_status: "success"
 
     rescue:
       - name: Set Failure Status
@@ -46,6 +45,11 @@
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
             patch_stage: "{{ patch_stage | items2dict }}"
-            patch_overal_status: "unsuccessful"
+
+      - name: Set Change Close Status
+        ansible.builtin.set_stats:
+          data:
+            cr_close_status: unsuccessful
+          aggregate: no
         failed_when: true
 
