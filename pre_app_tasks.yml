@@ -21,28 +21,36 @@
           name: "{{ app_role_name }}"
           tasks_from: stop_service.yml
       
-      - name: Set Success Status
-        set_fact:
+      - name: Set Successful Status
+        ansible.builtin.set_fact:
           patch_progress:
-            status: success
-            step: pre_app_task
-
-      - name: Set_Stats Success Status
+            - key: "{{ inventory_hostname }}"
+              value: 'success'
+          patch_stage:
+            - key: "{{ inventory_hostname }}"
+              value: pre_patch_tasks
+        
+      - name: Set_Stats Successful Status
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
-            patch_overal_status: "success"
+            patch_stage: "{{ patch_progress | items2dict }}"
+            patch_overal_status: "successful"
 
     rescue:
-      - name: Set Fail Status
-        set_fact:
+      - name: Set Failure Status
+        ansible.builtin.set_fact:
           patch_progress:
-            status: fail
-            step: pre_app_task
-
-      - name: Set_Stats Fail Status
+            - key: "{{ inventory_hostname }}"
+              value: 'fail'
+          patch_stage:
+            - key: "{{ inventory_hostname }}"
+              value: pre_app_tasks
+        
+      - name: Set_Stats Failure Status
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_progress | items2dict }}"
             patch_overal_status: "unsuccessful"
         failed_when: true

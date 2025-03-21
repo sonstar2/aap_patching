@@ -10,17 +10,21 @@
     cr_description: "{{ change_owner | default('Ansible') }} requests {{ groups['all'] }} servers in {{ change_environment | default('Dev') }} to patch }}"
 
   pre_tasks:
-    - name: Set default patch_progress variable
-      set_fact:
+    - name: Set Default Status
+      ansible.builtin.set_fact:
         patch_progress:
-          status: success
-          step: Init
-
-    - name: Set_Stats Success Status
+          - key: "{{ inventory_hostname }}"
+            value: 'success'
+        patch_stage:
+          - key: "{{ inventory_hostname }}"
+            value: Start
+      
+    - name: Set_Stats Successful Status
       ansible.builtin.set_stats:
         data:
           patch_progress: "{{ patch_progress | items2dict }}"
-          patch_overal_status: "success"
+          patch_stage: "{{ patch_progress | items2dict }}"
+          patch_overal_status: "successful"
 
   roles:
     - demo.process.snow_change_request

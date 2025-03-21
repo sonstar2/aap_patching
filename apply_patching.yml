@@ -8,7 +8,7 @@
   tasks:
 
   - name: Run only succeeded hosts
-    when: patch_progress[inventory_hostname].status == 'success'
+    when: patch_progress[inventory_hostname] == 'success'
     block:
 
       - name: Include patching role
@@ -18,25 +18,34 @@
       - name: Set Success Status
         ansible.builtin.set_fact:
           patch_progress:
-            status: success
-            step: apply_patchig
-          
+            - key: "{{ inventory_hostname }}"
+              value: 'success'
+          patch_stage:
+            - key: "{{ inventory_hostname }}"
+              value: apply_patching
+        
       - name: Set_Stats Success Status
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_progress | items2dict }}"
             patch_overal_status: "success"
 
     rescue:
-      - name: Set Fail Status
+      - name: Set Failure Status
         ansible.builtin.set_fact:
           patch_progress:
-            status: fail
-            step: apply_patchig
-
-      - name: Set_Stats Fail Status
+            - key: "{{ inventory_hostname }}"
+              value: 'fail'
+          patch_stage:
+            - key: "{{ inventory_hostname }}"
+              value: apply_patching
+        
+      - name: Set_Stats Failure Status
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_progress | items2dict }}"
             patch_overal_status: "unsuccessful"
         failed_when: true
+
