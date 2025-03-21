@@ -8,9 +8,10 @@
     # Check Repository
     - name: Check the RHEL Repository enabled
       ansible.builtin.yum_repository:
+        file: redhat-rhui.repo
         name: "rhel-{{ ansible_distribution_major_version }}-baseos-rhui-rpms"
         description: "Red Hat Enterprise Linux {{ ansible_distribution_major_version }} for $basearch - AppStream from RHUI (RPMs)"
-        baseurl: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel8/rhui/$releasever/$basearch/baseos/os
+        mirrorlist: https://rhui.REGION.aws.ce.redhat.com/pulp/mirror/content/dist/rhel8/rhui/$releasever/$basearch/baseos/os
         state: present
       check_mode: yes
       register: repo_status
