@@ -50,4 +50,7 @@
           data:
             cr_close_status: unsuccessful
           aggregate: no
-        failed_when: true
+
+      - name: Enforce Failure
+        ansible.builtin.fail:
+          msg: "Force to Fail"
