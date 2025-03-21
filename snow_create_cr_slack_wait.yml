@@ -15,8 +15,8 @@
     - name: Set_Stats Successful Status
       ansible.builtin.set_stats:
         data:
-          patch_prog: "{{ patch_prog | items2dict }}"
-          patch_stg: "{{ patch_stg | items2dict }}"
+          patch_progress: "{{ patch_prog | items2dict }}"
+          patch_stage: "{{ patch_stg | items2dict }}"
 
     - name: Set Change Close Status
       ansible.builtin.set_stats:
