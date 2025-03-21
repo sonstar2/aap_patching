@@ -26,7 +26,7 @@
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_stage | items2dict }}"
             patch_overal_status: "successful"
 
     rescue:
@@ -43,7 +43,7 @@
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_stage | items2dict }}"
             patch_overal_status: "unsuccessful"
         failed_when: true
 

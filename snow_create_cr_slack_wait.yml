@@ -16,7 +16,7 @@
       ansible.builtin.set_stats:
         data:
           patch_progress: "{{ patch_progress | items2dict }}"
-          patch_stage: "{{ patch_progress | items2dict }}"
+          patch_stage: "{{ patch_stage | items2dict }}"
           patch_overal_status: "successful"
 
 - name: Create a change request and send Slack Notification

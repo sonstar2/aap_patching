@@ -9,7 +9,7 @@
   tasks:
 
   - name: Run only succeeded hosts
-    when: patch_progress[inventory_hostname].status == 'success'
+    when: patch_progress[inventory_hostname] == 'success'
     block:
       - name: Pre Patch | Verify {{ app_deployment }} Application
         ansible.builtin.include_role:
@@ -34,7 +34,7 @@
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_stage | items2dict }}"
             patch_overal_status: "successful"
 
     rescue:
@@ -51,6 +51,6 @@
         ansible.builtin.set_stats:
           data:
             patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_progress | items2dict }}"
+            patch_stage: "{{ patch_stage | items2dict }}"
             patch_overal_status: "unsuccessful"
         failed_when: true
