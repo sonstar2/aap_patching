@@ -15,7 +15,12 @@
         patch_progress:
           status: success
           step: Init
-        cacheable: yes
+
+    - name: Set_Stats Success Status
+      ansible.builtin.set_stats:
+        data:
+          patch_progress: "{{ patch_progress | items2dict }}"
+          patch_overal_status: "success"
 
   roles:
     - demo.process.snow_change_request

@@ -6,6 +6,9 @@
 
   vars:
     servicenow_cr: close
+    close_code: "successful if {{ close_code }}"
+    close_notes: "{{ close_notes }}"
 
   roles:
     - demo.process.snow_change_request
+  run_once: yes

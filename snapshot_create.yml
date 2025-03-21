@@ -7,7 +7,7 @@
   tasks:
 
   - name: Run only succeeded hosts
-    when: patch_progress.status == 'success'
+    when: patch_progress[inventory_hostname].status == 'success'
     block:
       - name: Include Cloud role
         ansible.builtin.include_role:
@@ -19,7 +19,12 @@
           patch_progress:
             status: success
             step: snapshot_create
-          cacheable: yes
+  
+      - name: Set_Stats Success Status
+        ansible.builtin.set_stats:
+          data:
+            patch_progress: "{{ patch_progress | items2dict }}"
+            patch_overal_status: "success"
 
     rescue:
       - name: Set Fail Status
@@ -27,5 +32,10 @@
           patch_progress:
             status: fail
             step: snapshot_create
-          cacheable: yes
+
+      - name: Set_Stats Fail Status
+        ansible.builtin.set_stats:
+          data:
+            patch_progress: "{{ patch_progress | items2dict }}"
+            patch_overal_status: "unsuccessful"
         failed_when: true
