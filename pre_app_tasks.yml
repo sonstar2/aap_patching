@@ -23,34 +23,34 @@
       
       - name: Set Successful Status
         ansible.builtin.set_fact:
-          patch_progress:
+          patch_prog:
             - key: "{{ inventory_hostname }}"
               value: 'success'
-          patch_stage:
+          patch_stg:
             - key: "{{ inventory_hostname }}"
               value: pre_patch_tasks
         
       - name: Set_Stats Successful Status
         ansible.builtin.set_stats:
           data:
-            patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_stage | items2dict }}"
+            patch_progress: "{{ patch_prog | items2dict }}"
+            patch_stage: "{{ patch_stg | items2dict }}"
 
     rescue:
       - name: Set Failure Status
         ansible.builtin.set_fact:
-          patch_progress:
+          patch_prog:
             - key: "{{ inventory_hostname }}"
               value: 'fail'
-          patch_stage:
+          patch_stg:
             - key: "{{ inventory_hostname }}"
               value: pre_app_tasks
         
       - name: Set_Stats Failure Status
         ansible.builtin.set_stats:
           data:
-            patch_progress: "{{ patch_progress | items2dict }}"
-            patch_stage: "{{ patch_stage | items2dict }}"
+            patch_progress: "{{ patch_prog | items2dict }}"
+            patch_stage: "{{ patch_stg | items2dict }}"
 
       - name: Set Change Close Status
         ansible.builtin.set_stats:
