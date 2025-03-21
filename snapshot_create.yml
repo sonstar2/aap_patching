@@ -9,10 +9,10 @@
   - name: Run only succeeded hosts
     when: patch_progress.status == 'success'
     block:
-    - name: Include Cloud role
-      ansible.builtin.include_role:
-        name: demo.cloud.aws
-        tasks_from: snapshot_vm
+      - name: Include Cloud role
+        ansible.builtin.include_role:
+          name: demo.cloud.aws
+          tasks_from: snapshot_vm
 
       - name: Set Success Status
         set_fact:
