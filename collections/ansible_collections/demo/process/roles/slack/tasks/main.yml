@@ -7,7 +7,7 @@
       - slack_channel_name is defined
       - slack_message_type is defined
 
-- name: Send Pull Request notification message via Slack
+- name: Send notification message via Slack
   community.general.slack:
     token: "{{ slack_token }}"
     msg: "{{ slack_message }}"
