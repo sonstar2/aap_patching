@@ -1,0 +1,15 @@
+---
+- name: Start Application Service Task
+  hosts: "{{ _hosts | default(omit) }}"
+  become: true
+
+  vars:
+    app_role_name: "demo.application.{{ app_deployment }}"
+
+  tasks:
+
+    - name: Start {{ app_deployment }} Application
+      ansible.builtin.include_role:
+        name: "{{ app_role_name }}"
+        tasks_from: start_service.yml
+      
