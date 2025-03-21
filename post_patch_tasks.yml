@@ -6,7 +6,9 @@
   tasks:
   
   - name: Run only succeeded hosts
-    when: patch_progress[inventory_hostname] and patch_progress[inventory_hostname] == 'success'
+    when: 
+      - patch_progress[inventory_hostname] is defined
+      - patch_progress[inventory_hostname] == 'success'
     block:
       # Post Patch Task
       - name: Print Message
