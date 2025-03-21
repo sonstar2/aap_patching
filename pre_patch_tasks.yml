@@ -34,12 +34,12 @@
         msg: The system doesn't have yum-utils
 
     # Check Disk free space
-     - name: Ensure that free space on the volume is greater than 15%
-       assert:
-         that:
-           - mount.size_available > mount.size_total|float * 0.05
-         msg: Disk space has reached 95% threshold
-       vars:
-         mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
-       with_items:
-         - "{{ ansible_mounts }}"
+    - name: Ensure that free space on the volume is greater than 15%
+      assert:
+        that:
+          - mount.size_available > mount.size_total|float * 0.05
+        msg: Disk space has reached 95% threshold
+      vars:
+        mount: "{{ ansible_mounts | selectattr('mount','equalto',item.mount) | list | first }}"
+      with_items:
+        - "{{ ansible_mounts }}"
