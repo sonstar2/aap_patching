@@ -1,2 +1,4 @@
 ---
 servicenow_ticket: create
+sn_urgency: low
+sn_impact: low
