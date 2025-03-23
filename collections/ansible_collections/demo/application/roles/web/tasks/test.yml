@@ -1,0 +1,20 @@
+---
+
+- name: Test - socket is active
+  command: systemctl is-active httpd
+  changed_when: false
+
+- name: Test - socket is enabled  # 
+  command: systemctl is-enabled httpd
+  changed_when: false
+
+- name: Test - webserver works
+  ansible.builtin.uri:
+    url: http://localhost
+
+- name: Test - configuration file
+  stat:
+    path: /var/www/html/index.html
+  register: result
+  failed_when: not result.stat.exists
+

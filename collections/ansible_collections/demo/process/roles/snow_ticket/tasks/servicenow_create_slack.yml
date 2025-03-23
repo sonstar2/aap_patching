@@ -24,4 +24,4 @@
   vars:
     slack_message: >-
       An Incident ticket has been created. 
-      Please click on this URL to review: <{{ lookup('ansible.builtin.env', 'SN_HOST') }}/nav_to.do?uri=incidnet.do?sysparm_query=number={{new_incident.record.number}}>
+      Please click on this URL to review: <{{ lookup('ansible.builtin.env', 'SN_HOST') }}/nav_to.do?uri=incident.do?sysparm_query=number={{new_incident.record.number}}>

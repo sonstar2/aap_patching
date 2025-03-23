@@ -1,0 +1,6 @@
+---
+- name: Stop httpd
+  ansible.builtin.service:
+    name: httpd
+    state: stopped
+    enabled: false
