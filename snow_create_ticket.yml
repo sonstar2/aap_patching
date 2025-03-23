@@ -8,10 +8,11 @@
   - name: Set variables
     ansible.builtin.set_fact:
       ervicenow_ticket: create
-      incident_description: |-
+      incident_description: "Patch has been failed"
+      sn_description: |-
         Patch has been failed with the following servers
         hostname | failed Stage
-        ==========================
+        --------------------------
         {{ failed_hosts }}
     vars:
       failed_hosts: >-
