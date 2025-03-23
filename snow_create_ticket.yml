@@ -14,8 +14,7 @@
     vars:
       failed_hosts: |-
         {% for host in groups['all'] %} 
-        {{ host if ( patch_progress[host] == 'fail' ) }} at 
-        {{ patch_stage[host] if ( patch_progress[host] == 'fail' ) }} stage 
+        {{ host "at" patch_stage[host] if ( patch_progress[host] == 'fail' ) }} 
         {% endfor %}
       
     run_once: yes
