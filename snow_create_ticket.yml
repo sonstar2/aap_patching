@@ -4,11 +4,9 @@
   gather_facts: false
   connection: local
 
-  vars:
-    servicenow_ticket: create
-
   pre_tasks:
     ansible.builtin.set_fact:
+      ervicenow_ticket: create
       incident_description: |-
         Patch has been failed with the following servers
         {{ failed_hosts }}
