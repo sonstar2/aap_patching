@@ -10,11 +10,13 @@
       ervicenow_ticket: create
       incident_description: >-
         Patch has been failed with the following servers
+        hostname, failed Stage
         {{ failed_hosts }}
     vars:
       failed_hosts: |-
         {% for host in groups['all'] %} 
-        {{ host "at" patch_stage[host] if ( patch_progress[host] == 'fail' ) }} 
+        {{ host if ( patch_progress[host] == 'fail' ) }} 
+        {{ patch_stage[host] if ( patch_progress[host] == 'fail' ) }} 
         {% endfor %}
       
     run_once: yes
