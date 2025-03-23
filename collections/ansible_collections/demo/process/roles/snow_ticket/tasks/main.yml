@@ -3,6 +3,10 @@
   ansible.builtin.include_tasks: servicenow_create.yml
   when: servicenow_ticket == "create"
 
+- name: Create ticket with Slack Message
+  ansible.builtin.include_tasks: servicenow_create_slack.yml
+  when: servicenow_ticket == "create_slack"
+
 - name: Create ticket from EDA
   ansible.builtin.include_tasks: servicenow_create_eda.yml
   when: servicenow_ticket == "createeda"

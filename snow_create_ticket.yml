@@ -7,7 +7,7 @@
   pre_tasks:
   - name: Set variables
     ansible.builtin.set_fact:
-      ervicenow_ticket: create
+      ervicenow_ticket: create_slack
       incident_description: "Patch has been failed"
       sn_description: |-
         Patch has been failed with the following servers

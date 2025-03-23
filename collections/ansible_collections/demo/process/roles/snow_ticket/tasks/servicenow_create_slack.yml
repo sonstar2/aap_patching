@@ -1,0 +1,27 @@
+---
+- name: Create an incident in ServiceNow
+  servicenow.itsm.incident:
+    state: new
+    description: "{{ sn_description | default(omit) }}"
+    short_description: "{{ incident_description }}"
+    caller: admin
+    urgency: "{{ sn_urgency }}"
+    impact: "{{ sn_impact }}"
+    other:
+      u_operating_system: "{{ os | default(omit) }}"
+      u_ip_address: "{{ ip_addr | default(omit) }}"
+      u_vm_name: "{{ inventory_hostname | default(omit) }}"
+  register: new_incident
+  delegate_to: localhost
+
+- name: Display incident number
+  ansible.builtin.debug:
+    var: new_incident.record.number
+
+- name: Send Slack Notification
+  ansible.builtin.include_role:
+    name: demo.process.slack
+  vars:
+    slack_message: >-
+      An Incident ticket has been created. 
+      Please click on this URL to review: <{{ lookup('ansible.builtin.env', 'SN_HOST') }}/nav_to.do?uri=incidnet.do?sysparm_query=number={{new_incident.record.number}}>
