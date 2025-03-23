@@ -7,5 +7,14 @@
   vars:
     servicenow_ticket: create
 
+  pre_tasks:
+    ansible.builtin.set_fact:
+      incident_description: |-
+        Patch has been failed with the following servers
+        {{ failed_hosts }}
+    vars:
+      failed_hosts: |-
+        {% for host in groups['all'] %} {{ host if ( patch_progress[host] == 'fail' ) }}{% endfor %}
+
   roles:
     - demo.process.snow_ticket
