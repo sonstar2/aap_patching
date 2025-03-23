@@ -14,6 +14,8 @@
     vars:
       failed_hosts: |-
         {% for host in groups['all'] %} {{ host if ( patch_progress[host] == 'fail' ) }}{% endfor %}
+    run_once: yes
 
   roles:
     - demo.process.snow_ticket
+  run_once: yes
