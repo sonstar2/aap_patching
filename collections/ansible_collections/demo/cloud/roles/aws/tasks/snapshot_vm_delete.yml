@@ -4,8 +4,12 @@
   block:
 
     - name: AWS | SNAPSHOT VM | delete snapshots
+      when: inventory_hostname in aws_snapshots
       amazon.aws.ec2_snapshot:
         region: "{{ aws_region }}"
-        snapshot_id: "{{ aws_snapshots[inventory_hostname].snapshot_id }}"
+        snapshot_id: "{{ snap.snapshot_id }}"
         state: absent
-
+      loop: "{{ aws_snapshots[inventory_hostname] }}"
+      loop_control:
+        loop_var: snap
+        label: "{{ snap.snapshot_id }}"
