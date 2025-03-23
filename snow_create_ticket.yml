@@ -16,10 +16,10 @@
         {{ failed_hosts }}
     vars:
       failed_hosts: >-
-        {% for host in groups['all'] %} 
-        {{ host  if ( patch_progress[host] == 'fail' ) }} 
-        {{ '| ' if ( patch_progress[host] == 'fail' ) }} 
-        {{ patch_stage[host] if ( patch_progress[host] == 'fail' ) }} 
+        {% for host in groups['all'] %}
+        {{ host  if ( patch_progress[host] == 'fail' ) }}
+        {{ '| ' if ( patch_progress[host] == 'fail' ) }}
+        {{ patch_stage[host] if ( patch_progress[host] == 'fail' ) }}
         {% endfor %}
       
     run_once: yes
