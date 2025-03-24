@@ -27,7 +27,7 @@
     name: demo.process.slack
   vars:
     slack_message: >-
-      {% for host in groups['all'] %}@{{hostvars[linux_host].app_owner}} {% endfor %}
+      {% for host in groups['all'] %}@{{hostvars[host].app_owner}} {% endfor %}
       A change request has been raised for your servers.
       Please click on this URL to review: <{{ lookup('ansible.builtin.env', 'SN_HOST') }}/nav_to.do?uri=change_request.do?sysparm_query=number={{request.record.number }}>
 
