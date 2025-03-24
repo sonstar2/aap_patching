@@ -10,7 +10,7 @@
       servicenow_ticket: create_slack
       incident_description: "Patch has been failed"
       sn_description: |-
-        Patch has been failed with the following servers
+        Patch has been failed with the following servers and restored from snapshot successfully!!
         hostname | failed Stage
         --------------------------
         {{ failed_hosts }}

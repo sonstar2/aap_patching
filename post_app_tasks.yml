@@ -39,7 +39,7 @@
               value: 'success'
           patch_stg:
             - key: "{{ inventory_hostname }}"
-              value: post_app_tasks
+              value: complete
         
       - name: Set_Stats Successful Status
         ansible.builtin.set_stats:
