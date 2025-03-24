@@ -48,7 +48,7 @@
         <li> Patching Failed </li>
 {% elif hostvars[linux_host].patchingresult_yum.changed is undefined %}
         <li> Patching Failed </li>
-{% elif {{hostvars[linux_host]['patch_progress'][linux_host]}} == "fail" %}
+{% elif hostvars[linux_host]['patch_progress'][linux_host] == "fail" %}
         <li> Patching Failed </li>
 {% else %}
         <li> Compliant </li>
