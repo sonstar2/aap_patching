@@ -3,4 +3,4 @@
   ansible.builtin.service:
     name: httpd
     state: stopped
-    enabled: false
+    enabled: true
