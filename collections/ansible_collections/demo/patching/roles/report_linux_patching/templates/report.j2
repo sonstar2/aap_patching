@@ -53,7 +53,7 @@
 {% endif %}
               </ul>
             </td>
-            <td>{{hostvars[linux_host]['patch_stage']}}</td>
+            <td>{{hostvars[linux_host]['patch_stage'][linux_host]}}</td>
         </tr>
 {% endfor %}
     </tbody>
