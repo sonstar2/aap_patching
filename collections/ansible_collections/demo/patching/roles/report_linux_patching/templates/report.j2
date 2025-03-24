@@ -25,6 +25,7 @@
             <th>Operating System</th>
             <th>Operating System Version</th>
             <th>Required Updates</th>
+            <th>Workflow Stage</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +53,7 @@
 {% endif %}
               </ul>
             </td>
+            <td>{{hostvars[linux_host]['patch_stage']}}</td>
         </tr>
 {% endfor %}
     </tbody>
