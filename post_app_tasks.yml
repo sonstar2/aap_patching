@@ -17,10 +17,12 @@
     when: patch_progress[inventory_hostname] == 'success'
     block:
       - name: Make Fail for Demo purpose
-        ansible.builtin.fail:
+        ansible.builtin.include_role:
+          name: "{{ app_role_name }}"
+          tasks_from: break_service.yml
         when: 
-          - host_to_fail is defined
-          - host_to_fail == inventory_hostname
+          - host_to_fail_post_app_tasks is defined
+          - host_to_fail_post_app_tasks == inventory_hostname
 
       - name: Post Patch | Start {{ app_deployment }} Application
         ansible.builtin.include_role:

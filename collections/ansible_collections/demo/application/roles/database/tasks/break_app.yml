@@ -1,0 +1,6 @@
+---
+- name: Delete database files to break
+  ansible.builtin.file:
+    paths: /var/lib/pgsql
+    recurse: true
+    state: absent

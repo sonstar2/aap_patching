@@ -16,6 +16,12 @@
   - name: Run only succeeded hosts
     when: patch_progress[inventory_hostname] == 'success'
     block:
+      - name: Make Fail for Demo purpose
+        ansible.builtin.fail:
+        when: 
+          - host_to_fail_pre_app_tasks is defined
+          - host_to_fail_pre_app_tasks == inventory_hostname
+
       - name: Pre Patch | Include role for Pre Tasks
         ansible.builtin.include_role:
           name: demo.patching.patch_linux
