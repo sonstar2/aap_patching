@@ -12,4 +12,6 @@
         tasks_from: restore_vm
       when: 
         - patch_progress[inventory_hostname] == 'fail'
-        - patch_stage[inventory_hostname] == 'post_patch_tasks' or patch_stage[inventory_hostname] == 'post_app_tasks'
+        - patch_stage[inventory_hostname] == 'post_patch_tasks' or 
+          patch_stage[inventory_hostname] == 'post_app_tasks' or
+          patch_stage[inventory_hostname] == 'apply_patching'
