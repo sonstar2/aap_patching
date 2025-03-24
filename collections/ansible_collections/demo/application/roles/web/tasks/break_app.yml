@@ -1,6 +1,6 @@
 ---
 - name: Delete web files to break
   ansible.builtin.file:
-    paths: /var/www
+    path: /var/www
     recurse: true
     state: absent
