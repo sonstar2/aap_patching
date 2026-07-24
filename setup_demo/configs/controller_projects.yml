@@ -1,0 +1,9 @@
+---
+controller_projects:
+  - name: "AAP Patching"
+    organization: "Default"
+    scm_type: git
+    scm_url: "https://github.com/sonstar2/aap_patching.git"
+    scm_branch: main
+    scm_update_on_launch: true
+    scm_credential: "{{ omit }}"   # set to a credential name if the repo is private

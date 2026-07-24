@@ -1,0 +1,16 @@
+---
+controller_inventories:
+  - name: "Patching Target Hosts"
+    organization: "Default"
+    variables:
+      report_server: reports
+ 
+controller_inventory_sources:
+  - name: "AWS EC2 - Patching Targets"
+    inventory: "Patching Target Hosts"
+    organization: "Default"
+    source: ec2
+    credential: "AWS Snapshot Credential"
+    overwrite: true
+    update_on_launch: false   # workflow triggers the sync explicitly as its own node
+ 

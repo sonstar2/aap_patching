@@ -1,0 +1,104 @@
+---
+controller_templates:
+
+  - name: "Patching - Create Change Request"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snow_create_cr_wait.yml
+    inventory: "Patching Target Hosts"
+    credentials:
+      - "ServiceNow Credential"
+    extra_vars:
+      change_owner: "{{ '{{ change_owner }}' }}"
+      change_environment: "{{ '{{ change_environment }}' }}"
+    ask_variables_on_launch: true
+
+  - name: "Patching - Create Snapshot"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snapshot_create.yml
+    inventory: "Patching Target Hosts"
+    credentials:
+      - "AWS Snapshot Credential"
+
+  - name: "Patching - Delete Snapshot"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snapshot_delete.yml
+    inventory: "Patching Target Hosts"
+    credentials:
+      - "AWS Snapshot Credential"
+
+  - name: "Patching - Pre Patching Tasks"
+    job_type: run
+    project: "AAP Patching"
+    playbook: pre_patch_tasks.yml
+    inventory: "Patching Target Hosts"
+    become_enabled: true
+
+  - name: "Patching - Pre App Tasks"
+    job_type: run
+    project: "AAP Patching"
+    playbook: pre_app_tasks.yml
+    inventory: "Patching Target Hosts"
+    become_enabled: true
+
+  - name: "Patching - Apply Patching"
+    job_type: run
+    project: "AAP Patching"
+    playbook: apply_patching.yml
+    inventory: "Patching Target Hosts"
+    become_enabled: true
+
+  - name: "Patching - Post Patching Tasks"
+    job_type: run
+    project: "AAP Patching"
+    playbook: post_patch_tasks.yml
+    inventory: "Patching Target Hosts"
+    become_enabled: true
+
+  - name: "Patching - Post App Tasks"
+    job_type: run
+    project: "AAP Patching"
+    playbook: post_app_tasks.yml
+    inventory: "Patching Target Hosts"
+    become_enabled: true
+
+  - name: "Patching - Restore Snapshot on Failure"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snapshot_restore.yml
+    inventory: "Patching Target Hosts"
+    credentials:
+      - "AWS Snapshot Credential"
+    # NOTE: this playbook self-filters hosts using patch_progress / patch_stage
+    # set_stats data from earlier nodes, so it is safe (and intended) to run this
+    # against every host, not just the ones that failed.
+
+  - name: "Patching - Generate Report"
+    job_type: run
+    project: "AAP Patching"
+    playbook: generate_report.yml
+    inventory: "Patching Target Hosts"
+    notification_templates_success:
+      - "Patching Slack Notifications"
+    notification_templates_error:
+      - "Patching Slack Notifications"
+
+  - name: "Patching - Close Change Request"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snow_close_cr.yml
+    inventory: "Patching Target Hosts"
+    credentials:
+      - "ServiceNow Credential"
+
+  - name: "Patching - Create Incident Ticket"
+    job_type: run
+    project: "AAP Patching"
+    playbook: snow_create_ticket.yml
+    inventory: "Patching Target Hosts"
+    extra_vars:
+      snow_hostname: "{{ snow_hostname }}"
+      snow_username: "{{ snow_username }}"
+      snow_password: "{{ snow_password }}"

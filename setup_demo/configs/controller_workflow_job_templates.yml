@@ -1,0 +1,177 @@
+---
+# NOTE: infra.aap_configuration's workflow role supports two node schemas:
+#   1. `workflow_nodes`            -> "schema" model: success/failure/always
+#      nodes must be lists of {identifier: ...} dicts, nested under a
+#      `related:` key on each node.
+#   2. `simplified_workflow_nodes` -> flat model: success/failure/always
+#      nodes are just plain identifier strings, no `related:` nesting.
+# Mixing the two (workflow_nodes key + plain-string node lists) previously
+# caused "string indices must be integers, not 'str'". Using the simplified
+# model throughout below.
+#
+# Failure routing:
+#   Every stage's failure_nodes eventually reaches create_incident_ticket, so
+#   an incident is raised whenever any job in the workflow fails.
+#   restore_snapshot only sits in front of it for the three stages that
+#   snapshot_restore.yml itself actually checks for via patch_stage
+#   (apply_patching, post_patching_tasks, post_app_tasks) - a snapshot exists
+#   by then and there's something to roll back. Earlier failures
+#   (change request, snapshot creation, inventory sync, pre-tasks) go
+#   straight to the incident ticket since restore would be a no-op for them.
+#
+#   Both the clean success path (post_app_tasks) and the failure path
+#   (create_incident_ticket) converge on delete_snapshot before
+#   generate_report runs, so the snapshot is always cleaned up - whether it
+#   was never needed, or already consumed by a restore - before the run gets
+#   reported on.
+controller_workflows:
+  - name: "Linux Server Patching Workflow"
+    organization: "Default"
+    survey_enabled: true
+    survey_spec:
+      name: ""
+      description: "Patching run inputs"
+      spec:
+        - question_name: "Change Owner"
+          variable: change_owner
+          type: text
+          required: true
+        - question_name: "Change Environment"
+          variable: change_environment
+          type: multiplechoice
+          choices:
+            - Dev
+            - Test
+            - Prod
+          default: Dev
+          required: true
+
+    simplified_workflow_nodes:
+
+      # 1. Create Change Request (root node)
+      - identifier: create_change_request
+        unified_job_template: "Patching - Create Change Request"
+        success_nodes:
+          - create_snapshot
+        failure_nodes:
+          - create_incident_ticket
+        always_nodes: []
+
+      # 2. Create Snapshot
+      - identifier: create_snapshot
+        unified_job_template: "Patching - Create Snapshot"
+        success_nodes:
+          - inventory_sync
+        failure_nodes:
+          - create_incident_ticket
+        always_nodes: []
+
+      # 3. Inventory Sync (references the dynamic inventory source, not a job template)
+      - identifier: inventory_sync
+        unified_job_template: "AWS EC2 - Patching Targets"
+        success_nodes:
+          - pre_patching_tasks
+        failure_nodes:
+          - create_incident_ticket
+        always_nodes: []
+
+      # 4. Pre Patching Tasks
+      - identifier: pre_patching_tasks
+        unified_job_template: "Patching - Pre Patching Tasks"
+        success_nodes:
+          - pre_app_tasks
+        failure_nodes:
+          - create_incident_ticket
+        always_nodes: []
+
+      # 5. Pre App Tasks
+      - identifier: pre_app_tasks
+        unified_job_template: "Patching - Pre App Tasks"
+        success_nodes:
+          - apply_patching
+        failure_nodes:
+          - create_incident_ticket
+        always_nodes: []
+
+      # 6. Apply Patching
+      - identifier: apply_patching
+        unified_job_template: "Patching - Apply Patching"
+        success_nodes:
+          - post_patching_tasks
+        failure_nodes:
+          - restore_snapshot
+        always_nodes: []
+
+      # 7. Post Patching Task
+      - identifier: post_patching_tasks
+        unified_job_template: "Patching - Post Patching Tasks"
+        success_nodes:
+          - post_app_tasks
+        failure_nodes:
+          - restore_snapshot
+        always_nodes: []
+
+      # 8. Post App Tasks
+      - identifier: post_app_tasks
+        unified_job_template: "Patching - Post App Tasks"
+        success_nodes:
+          - delete_snapshot
+        failure_nodes:
+          - restore_snapshot
+        always_nodes: []
+
+      # 9. Restore Snapshot - only reached on failure of apply_patching /
+      #    post_patching_tasks / post_app_tasks. Always proceeds to the
+      #    incident ticket afterward, whether or not the restore itself
+      #    succeeded, since a failure already happened upstream either way.
+      - identifier: restore_snapshot
+        unified_job_template: "Patching - Restore Snapshot on Failure"
+        success_nodes: []
+        failure_nodes: []
+        always_nodes:
+          - create_incident_ticket
+
+      # Raise an incident ticket for whatever failed. Converges here from
+      # every stage's failure path (directly, or via restore_snapshot).
+      - identifier: create_incident_ticket
+        unified_job_template: "Patching - Create Incident Ticket"
+        success_nodes: []
+        failure_nodes: []
+        always_nodes:
+          - delete_snapshot
+
+      # Clean up the snapshot before reporting. Reached from a clean
+      # post_app_tasks success (nothing ever went wrong, snapshot no longer
+      # needed) or from create_incident_ticket on the failure path (snapshot
+      # already served its purpose via restore_snapshot, or was never
+      # touched if the failure happened before apply_patching).
+      - identifier: delete_snapshot
+        unified_job_template: "Patching - Delete Snapshot"
+        success_nodes: []
+        failure_nodes: []
+        always_nodes:
+          - generate_report
+
+      # 10. Generate Report - reached either from the clean success path or
+      #     the failure/incident path, so the run is documented either way.
+      #     The Slack notification isn't a separate workflow node - it's
+      #     wired as a notification template (notification_templates_success
+      #     / notification_templates_error) directly on this job template in
+      #     controller_job_templates.yml, which is the native AAP mechanism
+      #     for "run X, then notify" and fires immediately after this job
+      #     finishes, regardless of outcome.
+      - identifier: generate_report
+        unified_job_template: "Patching - Generate Report"
+        success_nodes: []
+        failure_nodes: []
+        always_nodes:
+          - close_change_request
+
+      # Optional 11th step: close out the SNOW change record. Delete this
+      # node (and the "Patching - Close Change Request" job template) if you
+      # only want the 10 stages you originally listed.
+      - identifier: close_change_request
+        unified_job_template: "Patching - Close Change Request"
+        success_nodes: []
+        failure_nodes: []
+        always_nodes: []

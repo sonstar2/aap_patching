@@ -1,0 +1,4 @@
+.ansible.cfg
+**/collections/*
+!**/collections/requirements.yml
+!**/collections/ansible_collections/demo

@@ -1,0 +1,37 @@
+---
+- name: Configure AAP Patching workflow using CaC
+  hosts: 127.0.0.1
+  connection: local
+  gather_facts: false
+  vars:
+    aap_username: "{{ vault_aap_username | default(lookup('env', 'CONTROLLER_USERNAME')) }}"
+    aap_password: "{{ vault_aap_password | default(lookup('env', 'CONTROLLER_PASSWORD')) }}"
+    aap_hostname: "{{ vault_aap_hostname | default(lookup('env', 'CONTROLLER_HOST')) }}"
+    aap_validate_certs: "{{ vault_aap_validate_certs | default(lookup('env', 'CONTROLLER_VERIFY_SSL')) }}"
+ 
+    # ServiceNow + AWS + Slack secrets used by the child job templates at run time,
+    # kept out of the CaC repo and only referenced here so credentials can be created.
+    snow_hostname: "{{ vault_snow_hostname | default(lookup('env', 'SNOW_HOST')) }}"
+    snow_username: "{{ vault_snow_username | default(lookup('env', 'SNOW_USERNAME')) }}"
+    snow_password: "{{ vault_snow_password | default(lookup('env', 'SNOW_PASSWORD')) }}"
+    aws_access_key: "{{ vault_aws_access_key | default(lookup('env', 'AWS_ACCESS_KEY')) }}"
+    aws_secret_key: "{{ vault_aws_secret_key | default(lookup('env', 'AWS_SECRET_KEY')) }}"
+    slack_token: "{{ vault_slack_token | default(lookup('env', 'SLACK_TOKEN')) }}"
+    scm_credential_username: "{{ vault_scm_username | default(lookup('env', 'SCM_USERNAME')) }}"
+    scm_credential_password: "{{ vault_scm_password | default(lookup('env', 'SCM_PASSWORD')) }}"
+ 
+    secrets_as_variables: true
+ 
+  tasks:
+    - name: Include vars from configs directory
+      ansible.builtin.include_vars:
+        dir: "{{ controller_configs_dir | default('./configs') }}"
+        ignore_files: [controller_config.yml.template]
+        extensions: ["yaml", "yml"]
+      tags:
+        - always
+ 
+    - name: Apply all controller configuration objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+ 
