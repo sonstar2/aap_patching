@@ -2,7 +2,7 @@
 collections:
   - name: community.general
   - name: servicenow.itsm
-  - name: ansible.platform
+  # - name: ansible.platform
   - name: ansible.hub
   - name: ansible.controller
   - name: ansible.eda
